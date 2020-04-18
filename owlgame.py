@@ -7,10 +7,10 @@ height=600
 screen=pygame.display.set_mode((width,height))
 pygame.display.set_caption("Orav")
 
-bg=pygame.transform.scale(pygame.image.load("Backroud.jpg"),(width,height))
-en=pygame.image.load("Owl.jpg")
-pl=pygame.image.load("Squirrel.jpg")
-ac=pygame.image.load("Acorn.jpg")
+bg=pygame.transform.scale(pygame.image.load("Backroud.png"),(width,height))
+en=pygame.image.load("Owl.png")
+pl=pygame.image.load("Squirrel.png")
+ac=pygame.image.load("Acorn.png")
 
 pygame.display.set_icon(ac)
 
@@ -33,12 +33,19 @@ class button:
                 return True
         return False
 
+class player:
+    def __init__(self, x, y, collide):
+        self.x = x
+        self.y = y
+        self.collide = collide
+    def collide(x, y):
+        
 def mainmenu():
     Button=button(150,255,250,100,"Play")
     def redraw_window():
         screen.blit(bg,(0,0))
         screen.blit((pygame.font.SysFont("comicsans",20).render("Menu",1,(0,0,0))),(0,0))
-        button.draw(width, height)
+        button.draw(screen)
         pygame.display.update()
     while True:
         fps.tick(15)
@@ -80,18 +87,21 @@ def game():
 def pausemenu():
     running=True
     click=False
-    while running:
-        
+    def redraw_window():
         screen.fill((0,0,0))
         drawtext("Game Paused",pygame.font.SysFont("consolas",12),(255,255,255),screen,20,20)
-        
         mx, my = pygame.mouse.get_pos()
         exittomainmenu=pygame.Rect(50,100,200,50)
         if exittomainmenu.collidepoint((mx,my)):
             if click:
                 running=False
         pygame.draw.rect(screen, (0,255,0),exittomainmenu)
-        
+        pygame.display.update()
+    
+    pos = pygame.mouse.get_pos()
+    while running:
+        fps.tick(15)
+        redraw_window()
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
                 pygame.quit()
@@ -100,19 +110,18 @@ def pausemenu():
                 if event.key==K_ESCAPE:
                     running=False
             if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    click=True
-            pygame.display.update()
-            fps.tick(15)
-
+                if button.mousebutton(pos):
+                    mainmenu()
 
 def options():
     running = True
-    while running:
-        
+    def redraw_window():
         screen.fill((0,0,0))
         drawtext("Options",pygame.font.SysFont("Consolas", 12),(255,255,255),screen,20,20)
-       
+        pygame.display.update()
+    while running:
+        fps.tick(15)
+        redraw_window()
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
                 pygame.quit()
@@ -120,8 +129,5 @@ def options():
             if event.type==KEYDOWN:
                 if event.key==K_ESCAPE:
                     running=False
-        pygame.display.update()
-        fps.tick(15)
 
-        
 mainmenu()
